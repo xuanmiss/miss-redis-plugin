@@ -1,9 +1,6 @@
 package org.miss.redis.client;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.*;
 
 /**
  * @project: miss-redis-plugin
@@ -46,4 +43,16 @@ public class JedisConnection {
 //    public JedisPool getJedisPool() {
 //        return jedisPool;
 //    }
+
+    public static void main(String[] args) {
+        JedisShardInfo shardInfo = new JedisShardInfo("k8s.definesys.com", 31006, "xdap_dev_redis_2");
+        shardInfo.setPassword( "xdapredis");
+        shardInfo.setSoTimeout(2000);
+        Jedis jedis = shardInfo.createResource();
+        ScanParams scanParams = new ScanParams();
+        scanParams.count(30);
+        scanParams.match("*gate*");
+        ScanResult<String> scanResult = jedis.scan("0", scanParams);
+        System.out.println(scanResult.getResult());
+    }
 }

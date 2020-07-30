@@ -14,11 +14,11 @@ public class RedisKeysRender extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if(value.toString().length() > 10) {
-            setText(value.toString().substring(value.toString().length() - 10));
-        }else {
+//        if(value.toString().length() > 10) {
+//            setText(value.toString().substring(value.toString().length() - 10));
+//        }else {
             setText(value.toString());
-        }
+//        }
 
         return this;
     }

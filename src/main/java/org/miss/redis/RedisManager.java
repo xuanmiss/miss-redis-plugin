@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Set;
 
 import static javax.swing.JList.HORIZONTAL_WRAP;
 
@@ -32,12 +33,17 @@ public class RedisManager {
     private JPanel leftPanel;
     private JList<RedisDBComponent> serverList;
     private JList<String> keyList;
-    private JPanel keyValuePanel;
     private JTextPane keyTextPanel;
     private JEditorPane valueEditorPanel;
-    private JButton 修改;
     private JButton moreButton;
     private JScrollPane keyListPanel;
+    private JTextPane ttlTextPanel;
+    private JEditorPane valuePanel;
+    private JButton updateValueButton;
+    private JTextField keyWordText;
+    private JButton searchKeyButton;
+    private JButton clearKeySearch;
+    private JButton newConnectButton;
 
     public RedisManager() {
         JFrame frame = new JFrame("RedisManage");
@@ -83,13 +89,18 @@ public class RedisManager {
         keyList.setCellRenderer(new RedisKeysRender());
         keyList.setAutoscrolls(true);
         moreButton.addActionListener(this::onMoreAction);
-        keyTextPanel.setAutoscrolls(true);
-        valueEditorPanel.setAutoscrolls(true);
+        searchKeyButton.addActionListener(this::onKeySearchAction);
+        clearKeySearch.addActionListener(this::onCleanKeyAction);
+        updateValueButton.addActionListener(this::onValueUpdateAction);
+        newConnectButton.addActionListener(this::newConnectAction);
         keyList.addListSelectionListener(e -> {
             RedisDBComponent selectRedisServer = serverList.getSelectedValue();
             selectRedisServer.initJedisSharedInfo();
             Jedis jedis = selectRedisServer.getJedis();
             String key = keyList.getSelectedValue();
+            if(key == null || key.isEmpty()) {
+                return;
+            }
             String keyType = jedis.type(key);
             String value = "";
             switch (keyType) {
@@ -112,12 +123,63 @@ public class RedisManager {
                     value = "";
                     break;
             }
+
             keyTextPanel.setText(key);
-            valueEditorPanel.setText(value);
+            ttlTextPanel.setText(jedis.ttl(key) + " ms");
+            valuePanel.setText(value);
             selectRedisServer.close();
         });
 
     }
+
+    private void newConnectAction(ActionEvent actionEvent) {
+        RedisConnectionPage form = new RedisConnectionPage();
+    }
+
+    private void onCleanKeyAction(ActionEvent actionEvent) {
+        keyWordText.setText("");
+
+        RedisDBComponent selectRedisServer = serverList.getSelectedValue();
+        selectRedisServer.initJedisSharedInfo();
+        Jedis jedis = selectRedisServer.getJedis();
+        ScanParams scanParams = new ScanParams();
+        scanParams.count(20);
+        ScanResult<String> stringScanResult = jedis.scan((selectRedisServer.getRedisCursor() == null || selectRedisServer.getRedisCursor().isEmpty()) ? "0" : selectRedisServer.getRedisCursor());
+        selectRedisServer.setRedisCursor(stringScanResult.getCursor());
+        selectRedisServer.setRedisKeys(stringScanResult.getResult());
+        String[] keyStringArray = new String[stringScanResult.getResult().size()];
+        keyList.setListData(selectRedisServer.getRedisKeys().toArray(keyStringArray));
+
+        selectRedisServer.close();
+
+    }
+
+    private void onKeySearchAction(ActionEvent actionEvent) {
+        RedisDBComponent selectRedisServer = serverList.getSelectedValue();
+        selectRedisServer.initJedisSharedInfo();
+        Jedis jedis = selectRedisServer.getJedis();
+
+        if(keyWordText.getText().trim().isEmpty()) {
+            return;
+        }
+        String key = keyWordText.getText().trim();
+        Set<String> matchKeys = jedis.keys("*" + key + "*");
+        String[] keyStringArray = new String[matchKeys.size()];
+        keyList.setListData(matchKeys.toArray(keyStringArray));
+        selectRedisServer.close();
+    }
+
+    private void onValueUpdateAction(ActionEvent actionEvent) {
+        RedisDBComponent selectRedisServer = serverList.getSelectedValue();
+        selectRedisServer.initJedisSharedInfo();
+        Jedis jedis = selectRedisServer.getJedis();
+        String key = keyList.getSelectedValue();
+        if(key == null || key.isEmpty()) {
+            return;
+        }
+
+    }
+
 
     private void onMoreAction(ActionEvent e) {
         RedisDBComponent selectRedisServer = serverList.getSelectedValue();
@@ -125,7 +187,10 @@ public class RedisManager {
         Jedis jedis = selectRedisServer.getJedis();
         ScanParams scanParams = new ScanParams();
         scanParams.count(20);
-        ScanResult<String> stringScanResult = jedis.scan((selectRedisServer.getRedisCursor() == null || selectRedisServer.getRedisCursor().isEmpty()) ? "0" : selectRedisServer.getRedisCursor());
+        if (!keyWordText.getText().trim().isEmpty()) {
+            scanParams.match("*" + keyWordText.getText().trim() + "*");
+        }
+        ScanResult<String> stringScanResult = jedis.scan((selectRedisServer.getRedisCursor() == null || selectRedisServer.getRedisCursor().isEmpty()) ? "0" : selectRedisServer.getRedisCursor(), scanParams);
         selectRedisServer.setRedisCursor(stringScanResult.getCursor());
         selectRedisServer.getRedisKeys().addAll(stringScanResult.getResult());
         String[] keyStringArray = new String[stringScanResult.getResult().size()];

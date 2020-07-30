@@ -78,6 +78,7 @@ public class RedisConnectionPage {
         if(RedisUtils.connectStatus(host, port, password, redisServerName)) {
             RedisDbSetting db = RedisDbSetting.getInstance();
             if (null == db) {
+
                 MessageDialog dialog = new MessageDialog("add server", "server is not up", new String[] {"cancel", "confirm"}, 1, null);
                 dialog.setSize(600, 200);
                 dialog.show();

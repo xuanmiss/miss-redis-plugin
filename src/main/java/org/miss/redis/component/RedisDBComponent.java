@@ -9,8 +9,6 @@ import redis.clients.jedis.JedisShardInfo;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +36,7 @@ public class RedisDBComponent extends Component implements MouseListener {
 
     private String redisCursor;
 
-    private java.util.List<String> redisKeys;
+    private List<String> redisKeys;
 
 
     public RedisDBComponent(RedisDb redisDb1) {

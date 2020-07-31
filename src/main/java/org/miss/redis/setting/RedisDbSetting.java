@@ -40,11 +40,11 @@ public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
     @Nullable
     @Override
     public RedisDb getState() {
-        if(globalRedisDbList != null && globalRedisDbList.size() > 0) {
+        if (globalRedisDbList != null && globalRedisDbList.size() > 0) {
             RedisDb state = new RedisDb();
             XmlSerializerUtil.copyBean(this.globalRedisDbList.get(0), state);
             return state;
-        }else {
+        } else {
             return null;
         }
     }
@@ -52,10 +52,10 @@ public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
     @Override
     public void loadState(@NotNull RedisDb state) {
 
-        if(this.isRedisDbExit(state)) {
+        if (this.isRedisDbExit(state)) {
             return;
 
-        }else {
+        } else {
             RedisDb redisDb = new RedisDb();
             XmlSerializerUtil.copyBean(state, redisDb);
             globalRedisDbList.add(redisDb);
@@ -70,8 +70,8 @@ public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
     public boolean isRedisDbExit(RedisDb state) {
 
 //        logger.info("isRedisDbExit globalRedisDbList={} redis={}", globalRedisDbList, state);
-        for(RedisDb redisDb : globalRedisDbList) {
-            if(redisDb.equals(state)) {
+        for (RedisDb redisDb : globalRedisDbList) {
+            if (redisDb.equals(state)) {
                 return true;
             }
         }

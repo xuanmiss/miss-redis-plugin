@@ -23,7 +23,7 @@
         <!-- Add your actions here -->
         <group id="RedisTest" text="RedisManager" description="测试Redis">
             <add-to-group group-id="MainMenu" anchor="last"/>
-        <!--这个用来指定一个分组下的触发动作，同样的需要一个id，自定义；class就是用来处理这个动作的逻辑类，具体的插件逻辑都会写到对应的action类里，text用来控制文案，description为描述-->
+            <!--这个用来指定一个分组下的触发动作，同样的需要一个id，自定义；class就是用来处理这个动作的逻辑类，具体的插件逻辑都会写到对应的action类里，text用来控制文案，description为描述-->
             <action id="redis.tool.action" class="org.miss.redis.action.RedisToolButtonAction" text="RedisConnect"
                     description="RedisManager">
                 <add-to-group group-id="MainMenu" anchor="first"/>

@@ -3,7 +3,6 @@ package org.miss.redis.service.impl;
 import org.miss.redis.client.JedisConnection;
 import org.miss.redis.service.RedisApplicationService;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisShardInfo;
 
 /**
@@ -17,11 +16,11 @@ public class RedisApplicationServiceImpl implements RedisApplicationService {
 
     private static JedisConnection jedisConnection;
 
-    private JedisShardInfo jedisShardInfo;
-
     static {
         jedisConnection = new JedisConnection();
     }
+
+    private JedisShardInfo jedisShardInfo;
 
     @Override
     public Jedis getJedis() {

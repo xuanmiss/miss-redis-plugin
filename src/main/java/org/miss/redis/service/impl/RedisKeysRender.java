@@ -17,7 +17,7 @@ public class RedisKeysRender extends DefaultListCellRenderer {
 //        if(value.toString().length() > 10) {
 //            setText(value.toString().substring(value.toString().length() - 10));
 //        }else {
-            setText(value.toString());
+        setText(value.toString());
 //        }
 
         return this;

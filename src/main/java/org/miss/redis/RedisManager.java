@@ -107,7 +107,7 @@ public class RedisManager {
             selectRedisServer.initJedisSharedInfo();
             Jedis jedis = selectRedisServer.getJedis();
             String key = keyList.getSelectedValue();
-            if(key == null || key.isEmpty()) {
+            if (key == null || key.isEmpty()) {
                 return;
             }
             String keyType = jedis.type(key);
@@ -169,7 +169,7 @@ public class RedisManager {
         selectRedisServer.initJedisSharedInfo();
         Jedis jedis = selectRedisServer.getJedis();
 
-        if(keyWordText.getText().trim().isEmpty()) {
+        if (keyWordText.getText().trim().isEmpty()) {
             return;
         }
         String key = keyWordText.getText().trim();
@@ -184,7 +184,7 @@ public class RedisManager {
         selectRedisServer.initJedisSharedInfo();
         Jedis jedis = selectRedisServer.getJedis();
         String key = keyList.getSelectedValue();
-        if(key == null || key.isEmpty()) {
+        if (key == null || key.isEmpty()) {
             return;
         }
 

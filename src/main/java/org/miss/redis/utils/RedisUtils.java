@@ -21,12 +21,12 @@ public class RedisUtils {
             jedisShardInfo.setPassword(password);
         }
 
-        try{
+        try {
             Jedis jedis = new Jedis(jedisShardInfo);
             if (jedis.ping().equals(PONG)) {
                 return true;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -19,9 +19,9 @@ public class RedisServerRender extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (value instanceof RedisDBComponent) {
             RedisDBComponent redisDBComponent = (RedisDBComponent) value;
-            try{
+            try {
                 setText(redisDBComponent.getName());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

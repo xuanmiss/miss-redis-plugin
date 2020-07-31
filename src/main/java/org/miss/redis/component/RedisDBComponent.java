@@ -46,12 +46,6 @@ public class RedisDBComponent extends Component implements MouseListener {
         this.port = redisDb1.getPort();
     }
 
-    @Override
-    public synchronized void addMouseListener(MouseListener l) {
-        super.addMouseListener(l);
-
-    }
-
     public RedisDBComponent() {
     }
 
@@ -60,6 +54,12 @@ public class RedisDBComponent extends Component implements MouseListener {
         this.port = port;
         this.password = password;
         this.name = name;
+    }
+
+    @Override
+    public synchronized void addMouseListener(MouseListener l) {
+        super.addMouseListener(l);
+
     }
 
     public JedisConnection getJedisConnection() {

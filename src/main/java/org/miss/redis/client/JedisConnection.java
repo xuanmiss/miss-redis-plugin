@@ -1,6 +1,9 @@
 package org.miss.redis.client;
 
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 /**
  * @project: miss-redis-plugin
@@ -18,9 +21,16 @@ public class JedisConnection {
 //        jedisPool = new JedisPool(config, "127.0.0.1", 6379, 10000, null);
 //    }
 
-    public JedisShardInfo initJedisSharedInfo(String host, String name, int port) {
-        JedisShardInfo shardInfo = new JedisShardInfo(host, port, name);
-        return shardInfo;
+    public static void main(String[] args) {
+        JedisShardInfo shardInfo = new JedisShardInfo("k8s.definesys.com", 31006, "xdap_dev_redis_2");
+        shardInfo.setPassword("xdapredis");
+        shardInfo.setSoTimeout(2000);
+        Jedis jedis = shardInfo.createResource();
+        ScanParams scanParams = new ScanParams();
+        scanParams.count(30);
+        scanParams.match("*gate*");
+        ScanResult<String> scanResult = jedis.scan("0", scanParams);
+        System.out.println(scanResult.getResult());
     }
 
 //    public Jedis initJedis(JedisShardInfo info) {
@@ -32,11 +42,8 @@ public class JedisConnection {
 //        return jedisPool.getResource();
 //    }
 
-    public JedisShardInfo initJedisSharedInfo(String host, String name, int port, String password) {
-        JedisShardInfo shardInfo = this.initJedisSharedInfo(host, name, port);
-        shardInfo.setPassword(password);
-        shardInfo.setSoTimeout(2000);
-
+    public JedisShardInfo initJedisSharedInfo(String host, String name, int port) {
+        JedisShardInfo shardInfo = new JedisShardInfo(host, port, name);
         return shardInfo;
     }
 
@@ -44,15 +51,11 @@ public class JedisConnection {
 //        return jedisPool;
 //    }
 
-    public static void main(String[] args) {
-        JedisShardInfo shardInfo = new JedisShardInfo("k8s.definesys.com", 31006, "xdap_dev_redis_2");
-        shardInfo.setPassword( "xdapredis");
+    public JedisShardInfo initJedisSharedInfo(String host, String name, int port, String password) {
+        JedisShardInfo shardInfo = this.initJedisSharedInfo(host, name, port);
+        shardInfo.setPassword(password);
         shardInfo.setSoTimeout(2000);
-        Jedis jedis = shardInfo.createResource();
-        ScanParams scanParams = new ScanParams();
-        scanParams.count(30);
-        scanParams.match("*gate*");
-        ScanResult<String> scanResult = jedis.scan("0", scanParams);
-        System.out.println(scanResult.getResult());
+
+        return shardInfo;
     }
 }

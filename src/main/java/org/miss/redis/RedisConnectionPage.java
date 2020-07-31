@@ -6,8 +6,6 @@ import org.miss.redis.setting.RedisDbSetting;
 import org.miss.redis.utils.RedisUtils;
 
 import javax.swing.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 
 /**
  * @project: miss-redis-plugin
@@ -93,7 +91,7 @@ public class RedisConnectionPage {
         String redisServerName = nameTextField.getText().trim();
 
         boolean connectStatus = RedisUtils.connectStatus(host, port, password, redisServerName);
-        if(!connectStatus) {
+        if (!connectStatus) {
             MessageDialog dialog = new MessageDialog("redis connection error", "connection fail", new String[]{"confirm"}, 1, null);
             dialog.setSize(400, 200);
             dialog.show();
@@ -110,17 +108,17 @@ public class RedisConnectionPage {
 
         String redisServerName = nameTextField.getText().trim();
 
-        if(RedisUtils.connectStatus(host, port, password, redisServerName)) {
+        if (RedisUtils.connectStatus(host, port, password, redisServerName)) {
             RedisDbSetting db = RedisDbSetting.getInstance();
             if (null == db) {
 
-                MessageDialog dialog = new MessageDialog("add server", "server is not up", new String[] {"cancel", "confirm"}, 1, null);
+                MessageDialog dialog = new MessageDialog("add server", "server is not up", new String[]{"cancel", "confirm"}, 1, null);
                 dialog.setSize(600, 200);
                 dialog.show();
             } else {
                 RedisDb redisDb = new RedisDb(host, port, password, redisServerName);
                 if (db.isRedisDbExit(redisDb)) {
-                    MessageDialog dialog = new MessageDialog("server exist", "server repeat", new String[] {"confirm"}, 1, null);
+                    MessageDialog dialog = new MessageDialog("server exist", "server repeat", new String[]{"confirm"}, 1, null);
                     dialog.setSize(600, 200);
                     dialog.show();
                 } else {

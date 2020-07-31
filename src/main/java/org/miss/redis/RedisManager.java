@@ -1,6 +1,5 @@
 package org.miss.redis;
 
-import org.jsoup.internal.StringUtil;
 import org.miss.redis.component.RedisDBComponent;
 import org.miss.redis.component.RedisServerListModel;
 import org.miss.redis.service.impl.RedisKeysRender;
@@ -12,12 +11,9 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
-
-import static javax.swing.JList.HORIZONTAL_WRAP;
 
 /**
  * @project: miss-redis-plugin
@@ -44,9 +40,10 @@ public class RedisManager {
     private JButton searchKeyButton;
     private JButton clearKeySearch;
     private JButton newConnectButton;
+    private JFrame frame;
 
     public RedisManager() {
-        JFrame frame = new JFrame("RedisManage");
+        frame = new JFrame("RedisManage");
         frame.setContentPane(contentPanel);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         initRedisServerList();
@@ -56,7 +53,19 @@ public class RedisManager {
         frame.setVisible(true);
     }
 
-    private void initRedisServerList() {
+    public void updateServerList(List<RedisDb> allRedisDb) {
+        RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
+
+        RedisServerListModel redisServerListModel = new RedisServerListModel();
+
+        for (RedisDb redisDb1 : allRedisDb) {
+            redisServerListModel.addElement(new RedisDBComponent(redisDb1));
+        }
+        redisServerListModel.addElement(defauleRedisDb);
+        serverList.setModel(redisServerListModel);
+    }
+
+    public void initRedisServerList() {
         RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
         RedisDbSetting dbSetting = RedisDbSetting.getInstance();
         List<RedisDb> redisDbList = dbSetting.getAllRedisDb();
@@ -133,7 +142,8 @@ public class RedisManager {
     }
 
     private void newConnectAction(ActionEvent actionEvent) {
-        RedisConnectionPage form = new RedisConnectionPage();
+        RedisConnectionPage form = new RedisConnectionPage(this);
+
     }
 
     private void onCleanKeyAction(ActionEvent actionEvent) {
@@ -177,6 +187,7 @@ public class RedisManager {
         if(key == null || key.isEmpty()) {
             return;
         }
+
 
     }
 

@@ -6,6 +6,8 @@ import org.miss.redis.setting.RedisDbSetting;
 import org.miss.redis.utils.RedisUtils;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 /**
  * @project: miss-redis-plugin
@@ -24,6 +26,8 @@ public class RedisConnectionPage {
     private JButton cancelButton;
     private JPasswordField passwordField;
 
+    private RedisManager redisManager;
+
     public RedisConnectionPage() {
         JFrame frame = new JFrame("RedisConnection");
         frame.setContentPane(rootPane);
@@ -31,7 +35,10 @@ public class RedisConnectionPage {
         frame.pack();
         frame.setSize(400, 600);
         frame.setVisible(true);
-
+        frame.addWindowStateListener(windowEvent -> {
+            System.out.println(windowEvent.getNewState());
+            System.out.println(windowEvent.getOldState());
+        });
 
         cancelButton.addActionListener(e -> {
             JFrame jFrame = frame;
@@ -46,6 +53,34 @@ public class RedisConnectionPage {
         testConnectButton.addActionListener(e -> {
             onTestConnection();
         });
+    }
+
+    public RedisConnectionPage(RedisManager redisManager) {
+        JFrame frame = new JFrame("RedisConnection");
+        frame.setContentPane(rootPane);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.pack();
+        frame.setSize(400, 600);
+        frame.setVisible(true);
+        frame.addWindowStateListener(windowEvent -> {
+            System.out.println(windowEvent.getNewState());
+            System.out.println(windowEvent.getOldState());
+        });
+
+        cancelButton.addActionListener(e -> {
+            JFrame jFrame = frame;
+            onCancel(jFrame);
+        });
+
+        confirmButton.addActionListener(e -> {
+            JFrame jFrame = frame;
+            onConfirm(jFrame);
+        });
+
+        testConnectButton.addActionListener(e -> {
+            onTestConnection();
+        });
+        this.redisManager = redisManager;
     }
 
     private void onTestConnection() {
@@ -90,6 +125,7 @@ public class RedisConnectionPage {
                     dialog.show();
                 } else {
                     db.loadState(new RedisDb(host, port, password, redisServerName));
+                    redisManager.updateServerList(db.getAllRedisDb());
                     jFrame.dispose();
                 }
             }

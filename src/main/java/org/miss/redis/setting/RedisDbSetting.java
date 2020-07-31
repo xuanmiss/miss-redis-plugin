@@ -24,12 +24,11 @@ import java.util.List;
         defaultStateAsResource = true,
         externalStorageOnly = true
 )
-public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
-
-//    private static final Logger logger = LoggerFactory.getLogger(RedisDbSetting.class);
+public class RedisDbSetting implements PersistentStateComponent<RedisDbServer> {
 
 
-    private List<RedisDb> globalRedisDbList = new ArrayList<>(10);
+    private RedisDbServer redisDbServer = new RedisDbServer();
+
 
     public static RedisDbSetting getInstance() {
 //        logger.info("getInstance start");
@@ -37,40 +36,10 @@ public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
     }
 
 
-    @Nullable
-    @Override
-    public RedisDb getState() {
-        if (globalRedisDbList != null && globalRedisDbList.size() > 0) {
-            RedisDb state = new RedisDb();
-            XmlSerializerUtil.copyBean(this.globalRedisDbList.get(0), state);
-            return state;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void loadState(@NotNull RedisDb state) {
-
-        if (this.isRedisDbExit(state)) {
-            return;
-
-        } else {
-            RedisDb redisDb = new RedisDb();
-            XmlSerializerUtil.copyBean(state, redisDb);
-            globalRedisDbList.add(redisDb);
-//            logger.info("loadState redisDb={}", state);
-        }
-    }
-
-    public List<RedisDb> getAllRedisDb() {
-        return globalRedisDbList;
-    }
-
     public boolean isRedisDbExit(RedisDb state) {
 
 //        logger.info("isRedisDbExit globalRedisDbList={} redis={}", globalRedisDbList, state);
-        for (RedisDb redisDb : globalRedisDbList) {
+        for (RedisDb redisDb : redisDbServer.getRedisDbList()) {
             if (redisDb.equals(state)) {
                 return true;
             }
@@ -80,8 +49,37 @@ public class RedisDbSetting implements PersistentStateComponent<RedisDb> {
 
     @Override
     public String toString() {
-        return "RedisDbSettion{" +
-                "globalRedisDbList=" + globalRedisDbList +
+        return "RedisDbSetting{" +
+                "redisDbServer=" + redisDbServer +
                 '}';
+    }
+
+    @Nullable
+    @Override
+    public RedisDbServer getState() {
+        if (redisDbServer != null && redisDbServer.getRedisDbList().size() > 0) {
+            RedisDbServer state = new RedisDbServer();
+            XmlSerializerUtil.copyBean(this.redisDbServer, state);
+            return state;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void loadState(@NotNull RedisDbServer state) {
+        RedisDbServer redisDbServer = new RedisDbServer();
+        XmlSerializerUtil.copyBean(state, redisDbServer);
+        this.redisDbServer = redisDbServer;
+    }
+
+
+    public void addRedisDb(RedisDb redisDb) {
+        this.redisDbServer.getRedisDbList().add(redisDb);
+        this.loadState(this.redisDbServer);
+    }
+
+    public List<RedisDb> getAllDbList() {
+        return this.redisDbServer.getRedisDbList();
     }
 }

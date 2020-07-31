@@ -6,6 +6,7 @@ import org.miss.redis.setting.RedisDbSetting;
 import org.miss.redis.utils.RedisUtils;
 
 import javax.swing.*;
+import java.util.Collections;
 
 /**
  * @project: miss-redis-plugin
@@ -122,8 +123,8 @@ public class RedisConnectionPage {
                     dialog.setSize(600, 200);
                     dialog.show();
                 } else {
-                    db.loadState(new RedisDb(host, port, password, redisServerName));
-                    redisManager.updateServerList(db.getAllRedisDb());
+                    db.addRedisDb(new RedisDb(host, port, password, redisServerName));
+                    redisManager.updateServerList(db.getAllDbList());
                     jFrame.dispose();
                 }
             }

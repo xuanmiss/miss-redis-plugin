@@ -30,7 +30,6 @@ public class RedisManager {
     private JList<RedisDBComponent> serverList;
     private JList<String> keyList;
     private JTextPane keyTextPanel;
-    private JEditorPane valueEditorPanel;
     private JButton moreButton;
     private JScrollPane keyListPanel;
     private JTextPane ttlTextPanel;
@@ -40,6 +39,8 @@ public class RedisManager {
     private JButton searchKeyButton;
     private JButton clearKeySearch;
     private JButton newConnectButton;
+    private JScrollPane valueScrollPanel;
+    private JButton newKeyButton;
     private JFrame frame;
 
     public RedisManager() {
@@ -68,7 +69,7 @@ public class RedisManager {
     public void initRedisServerList() {
         RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
         RedisDbSetting dbSetting = RedisDbSetting.getInstance();
-        List<RedisDb> redisDbList = dbSetting.getAllRedisDb();
+        List<RedisDb> redisDbList = dbSetting.getAllDbList();
 
         RedisServerListModel redisServerListModel = new RedisServerListModel();
 
@@ -135,7 +136,9 @@ public class RedisManager {
 
             keyTextPanel.setText(key);
             ttlTextPanel.setText(jedis.ttl(key) + " ms");
+
             valuePanel.setText(value);
+            valuePanel.setVisible(false);
             selectRedisServer.close();
         });
 
@@ -187,7 +190,28 @@ public class RedisManager {
         if (key == null || key.isEmpty()) {
             return;
         }
-
+        String keyType = jedis.type(key);
+        String value = valuePanel.getText().trim();
+        switch (keyType) {
+            case "string":
+                break;
+            case "list":
+                value = value;
+                break;
+            case "set":
+                value = value;
+                break;
+            case "zset":
+                value = value;
+                break;
+            case "hash":
+                value = value;
+                break;
+            default:
+                value = value;;
+                break;
+        }
+        System.out.println(value);
 
     }
 

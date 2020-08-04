@@ -125,14 +125,7 @@
                           <enabled value="true"/>
                         </properties>
                         <border type="none"/>
-                        <children>
-                          <component id="d194b" class="javax.swing.JEditorPane" binding="valuePanel">
-                            <constraints/>
-                            <properties>
-                              <text value=""/>
-                            </properties>
-                          </component>
-                        </children>
+                        <children/>
                       </scrollpane>
                       <component id="18838" class="javax.swing.JButton" binding="updateValueButton">
                         <constraints>

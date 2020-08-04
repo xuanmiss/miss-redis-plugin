@@ -138,7 +138,6 @@ public class RedisManager {
             ttlTextPanel.setText(jedis.ttl(key) + " ms");
 
             valuePanel.setText(value);
-            valuePanel.setVisible(false);
             selectRedisServer.close();
         });
 

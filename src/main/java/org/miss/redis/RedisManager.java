@@ -44,6 +44,9 @@ public class RedisManager {
     private JButton newConnectButton;
     private JScrollPane valueScrollPanel;
     private JButton newKeyButton;
+    private JPanel valueDetailPanel;
+    private JPanel keyDetailPanel;
+    private JPanel valueDisplayPanel;
     private JList valueList;
     private JFrame frame;
 
@@ -112,6 +115,9 @@ public class RedisManager {
         valuePanel.setMinimumSize(new Dimension(-1, -1));
         valuePanel.setMaximumSize(new Dimension(-1, -1));
         valuePanel.setPreferredSize(new Dimension(-1, -1));
+        valueList.setVisible(true);
+        valueScrollPanel.add(valuePanel);
+        valueScrollPanel.setVisible(true);
         keyList.addListSelectionListener(e -> {
             RedisDBComponent selectRedisServer = serverList.getSelectedValue();
             selectRedisServer.initJedisSharedInfo();
@@ -130,14 +136,15 @@ public class RedisManager {
 
                     value = jedis.get(key);
                     valuePanel.setText(value);
-                    valueList.setVisible(false);
-                    valueScrollPanel.remove(valueList);
-                    valueScrollPanel.add(valuePanel);
-                    valueScrollPanel.setVisible(true);
+                    valuePanel.repaint();
+//                    valueList.setVisible(false);
+//                    valueScrollPanel.remove(valueList);
+//                    valueScrollPanel.add(valuePanel);
+//                    valueScrollPanel.setVisible(true);
+//                    valueScrollPanel.validate();
+//                    valueScrollPanel.repaint();
 //                    valueScrollPanel.updateUI();
 //                    valueScrollPanel.repaint();
-                    rightPanel.updateUI();
-                    rightPanel.repaint();
 
                     break;
                 case "list":

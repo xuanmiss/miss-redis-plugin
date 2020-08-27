@@ -10,7 +10,6 @@ import org.miss.redis.setting.RedisDbSetting;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
-import sun.java2d.pipe.ValidatePipe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -137,15 +136,6 @@ public class RedisManager {
                     value = jedis.get(key);
                     valuePanel.setText(value);
                     valuePanel.repaint();
-//                    valueList.setVisible(false);
-//                    valueScrollPanel.remove(valueList);
-//                    valueScrollPanel.add(valuePanel);
-//                    valueScrollPanel.setVisible(true);
-//                    valueScrollPanel.validate();
-//                    valueScrollPanel.repaint();
-//                    valueScrollPanel.updateUI();
-//                    valueScrollPanel.repaint();
-
                     break;
                 case "list":
 
@@ -162,8 +152,6 @@ public class RedisManager {
                     valueScrollPanel.add(valueList);
                     valueScrollPanel.remove(valuePanel);
                     valuePanel.setVisible(false);
-//                    valueScrollPanel.updateUI();
-//                    valueScrollPanel.repaint();
                     rightPanel.updateUI();
                     rightPanel.repaint();
                     break;
@@ -197,7 +185,6 @@ public class RedisManager {
                     break;
             }
 
-//            valuePanel.setVisible(false);
             selectRedisServer.close();
         });
 

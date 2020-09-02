@@ -32,6 +32,10 @@
                     description="Open redis server list">
                 <add-to-group group-id="MainMenu" anchor="last"/>
             </action>
+<!--            <action id="redis.tool.test" class="org.miss.redis.action.RedisTestAction" text="resitTest"-->
+<!--                    description="test swing">-->
+<!--                <add-to-group group-id="MainMenu" anchor="last"/>-->
+<!--            </action>-->
         </group>
 
     </actions>

@@ -62,19 +62,19 @@ public class RedisManager {
     }
 
     public void updateServerList(List<RedisDb> allRedisDb) {
-        RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
+//        RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
 
         RedisServerListModel redisServerListModel = new RedisServerListModel();
 
         for (RedisDb redisDb1 : allRedisDb) {
             redisServerListModel.addElement(new RedisDBComponent(redisDb1));
         }
-        redisServerListModel.addElement(defauleRedisDb);
+//        redisServerListModel.addElement(defauleRedisDb);
         serverList.setModel(redisServerListModel);
     }
 
     public void initRedisServerList() {
-        RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
+//        RedisDBComponent defauleRedisDb = new RedisDBComponent("k8s.definesys.com", 31006, "xdapredis", "xdap_dev_redis_2");
         RedisDbSetting dbSetting = RedisDbSetting.getInstance();
         List<RedisDb> redisDbList = dbSetting.getAllDbList();
 
@@ -83,7 +83,7 @@ public class RedisManager {
         for (RedisDb redisDb1 : redisDbList) {
             redisServerListModel.addElement(new RedisDBComponent(redisDb1));
         }
-        redisServerListModel.addElement(defauleRedisDb);
+//        redisServerListModel.addElement(defauleRedisDb);
 
         serverList.setModel(redisServerListModel);
         serverList.setCellRenderer(new RedisServerRender());

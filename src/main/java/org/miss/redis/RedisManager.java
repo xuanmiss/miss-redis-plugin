@@ -1,5 +1,6 @@
 package org.miss.redis;
 
+import com.intellij.ide.plugins.newui.TextHorizontalLayout;
 import com.intellij.ui.components.JBList;
 import org.miss.redis.component.RedisDBComponent;
 import org.miss.redis.component.RedisServerListModel;
@@ -10,7 +11,6 @@ import org.miss.redis.setting.RedisDbSetting;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
-import sun.java2d.pipe.ValidatePipe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,8 +42,11 @@ public class RedisManager {
     private JButton searchKeyButton;
     private JButton clearKeySearch;
     private JButton newConnectButton;
-    private JScrollPane valueScrollPanel;
     private JButton newKeyButton;
+    private JPanel valueDetailPanel;
+    private JPanel keyDetailPanel;
+    private JPanel valueDisplayPanel;
+    private JPanel valurViewPanel;
     private JList valueList;
     private JFrame frame;
 
@@ -108,11 +111,10 @@ public class RedisManager {
         updateValueButton.addActionListener(this::onValueUpdateAction);
         newConnectButton.addActionListener(this::newConnectAction);
         valueList = new JBList();
+        valurViewPanel.setLayout(new GridLayout(1, 1));
         valuePanel = new JEditorPane();
-        valuePanel.setMinimumSize(new Dimension(-1, -1));
-        valuePanel.setMaximumSize(new Dimension(-1, -1));
-        valuePanel.setPreferredSize(new Dimension(-1, -1));
         keyList.addListSelectionListener(e -> {
+            valurViewPanel.removeAll();
             RedisDBComponent selectRedisServer = serverList.getSelectedValue();
             selectRedisServer.initJedisSharedInfo();
             Jedis jedis = selectRedisServer.getJedis();
@@ -126,71 +128,47 @@ public class RedisManager {
             ttlTextPanel.setText(jedis.ttl(key) + " ms");
             switch (keyType) {
                 case "string":
-                    valueScrollPanel.setVisible(false);
+                    valurViewPanel.setVisible(true);
 
                     value = jedis.get(key);
                     valuePanel.setText(value);
-                    valueList.setVisible(false);
-                    valueScrollPanel.remove(valueList);
-                    valueScrollPanel.add(valuePanel);
-                    valueScrollPanel.setVisible(true);
-//                    valueScrollPanel.updateUI();
-//                    valueScrollPanel.repaint();
-                    rightPanel.updateUI();
-                    rightPanel.repaint();
-
+                    valurViewPanel.add(valuePanel);
+                    valurViewPanel.updateUI();
                     break;
                 case "list":
 
                     valueList.setListData(jedis.lrange(key, 0, -1).toArray());
-                    valueScrollPanel.add(valueList);
-                    valueScrollPanel.remove(valuePanel);
-                    valuePanel.setVisible(false);
-                    valueScrollPanel.updateUI();
-                    valueScrollPanel.repaint();
+                    valurViewPanel.add(valueList);
+                    valurViewPanel.updateUI();
                     break;
                 case "set":
 
                     valueList.setListData(jedis.smembers(key).toArray());
-                    valueScrollPanel.add(valueList);
-                    valueScrollPanel.remove(valuePanel);
-                    valuePanel.setVisible(false);
-//                    valueScrollPanel.updateUI();
-//                    valueScrollPanel.repaint();
-                    rightPanel.updateUI();
-                    rightPanel.repaint();
+                    valurViewPanel.add(valueList);
+                    valurViewPanel.updateUI();
                     break;
                 case "zset":
 
                     valueList.setListData(jedis.zrange(key, 0, -1).toArray());
-                    valueScrollPanel.add(valueList);
-                    valueScrollPanel.remove(valuePanel);
-                    valuePanel.setVisible(false);
-                    valueScrollPanel.updateUI();
-                    valueScrollPanel.repaint();
+                    valurViewPanel.add(valueList);
+                    valurViewPanel.updateUI();
                     break;
                 case "hash":
                     value = jedis.hgetAll(key).toString();
                     valuePanel.setText(value);
-                    valueList.setVisible(false);
-                    valueScrollPanel.remove(valueList);
-                    valueScrollPanel.add(valuePanel);
-                    valueScrollPanel.updateUI();
-                    valueScrollPanel.repaint();
+                    valurViewPanel.add(valuePanel);
+                    valurViewPanel.updateUI();
                     break;
                 default:
                     value = "";
 
                     valuePanel.setText(value);
-                    valueList.setVisible(false);
-                    valueScrollPanel.remove(valueList);
-                    valueScrollPanel.add(valuePanel);
-                    valueScrollPanel.updateUI();
-                    valueScrollPanel.repaint();
+                    valurViewPanel.add(valuePanel);
+                    valurViewPanel.updateUI();
+
                     break;
             }
 
-//            valuePanel.setVisible(false);
             selectRedisServer.close();
         });
 

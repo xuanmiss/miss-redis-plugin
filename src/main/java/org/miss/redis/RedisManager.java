@@ -47,6 +47,7 @@ public class RedisManager {
     private JPanel keyDetailPanel;
     private JPanel valueDisplayPanel;
     private JPanel valurViewPanel;
+    private JButton updateButton;
     private JList valueList;
     private JFrame frame;
 
@@ -56,7 +57,7 @@ public class RedisManager {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         initRedisServerList();
         frame.pack();
-        frame.setSize(800, 1000);
+        frame.setSize(1000, 800);
         frame.setVisible(true);
         frame.setVisible(true);
     }
@@ -108,7 +109,8 @@ public class RedisManager {
         moreButton.addActionListener(this::onMoreAction);
         searchKeyButton.addActionListener(this::onKeySearchAction);
         clearKeySearch.addActionListener(this::onCleanKeyAction);
-        updateValueButton.addActionListener(this::onValueUpdateAction);
+        updateButton.addActionListener(this::onValueUpdateAction);
+        updateValueButton.addActionListener(this::onValueUpdateConfirmAction);
         newConnectButton.addActionListener(this::newConnectAction);
         valueList = new JBList();
         valurViewPanel.setLayout(new GridLayout(1, 1));
@@ -174,6 +176,8 @@ public class RedisManager {
 
     }
 
+
+
     private void newConnectAction(ActionEvent actionEvent) {
         RedisConnectionPage form = new RedisConnectionPage(this);
 
@@ -211,8 +215,15 @@ public class RedisManager {
         keyList.setListData(matchKeys.toArray(keyStringArray));
         selectRedisServer.close();
     }
-
     private void onValueUpdateAction(ActionEvent actionEvent) {
+        RedisDBComponent selectRedisServer = serverList.getSelectedValue();
+        selectRedisServer.initJedisSharedInfo();
+        Jedis jedis = selectRedisServer.getJedis();
+        String key = keyList.getSelectedValue();
+
+
+    }
+    private void onValueUpdateConfirmAction(ActionEvent actionEvent) {
         RedisDBComponent selectRedisServer = serverList.getSelectedValue();
         selectRedisServer.initJedisSharedInfo();
         Jedis jedis = selectRedisServer.getJedis();
@@ -242,6 +253,7 @@ public class RedisManager {
                 break;
         }
         System.out.println(value);
+        selectRedisServer.close();
 
     }
 

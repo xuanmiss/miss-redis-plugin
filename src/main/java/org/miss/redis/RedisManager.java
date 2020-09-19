@@ -1,6 +1,11 @@
 package org.miss.redis;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.intellij.ide.plugins.newui.TextHorizontalLayout;
+import com.intellij.json.JsonParser;
+import com.intellij.json.json5.Json5Language;
 import com.intellij.ui.components.JBList;
 import org.miss.redis.component.RedisDBComponent;
 import org.miss.redis.component.RedisServerListModel;
@@ -13,10 +18,14 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @project: miss-redis-plugin
@@ -115,69 +124,69 @@ public class RedisManager {
         valueList = new JBList();
         valurViewPanel.setLayout(new GridLayout(1, 1));
         valuePanel = new JEditorPane();
-        keyList.addListSelectionListener(e -> {
-            valurViewPanel.removeAll();
-            RedisDBComponent selectRedisServer = serverList.getSelectedValue();
-            selectRedisServer.initJedisSharedInfo();
-            Jedis jedis = selectRedisServer.getJedis();
-            String key = keyList.getSelectedValue();
-            if (key == null || key.isEmpty()) {
-                return;
-            }
-            String keyType = jedis.type(key);
-            String value = "";
-            keyTextPanel.setText(key);
-            ttlTextPanel.setText(jedis.ttl(key) + " ms");
-            switch (keyType) {
-                case "string":
-                    valurViewPanel.setVisible(true);
-
-                    value = jedis.get(key);
-                    valuePanel.setText(value);
-                    valurViewPanel.add(valuePanel);
-                    valurViewPanel.updateUI();
-                    break;
-                case "list":
-
-                    valueList.setListData(jedis.lrange(key, 0, -1).toArray());
-                    valurViewPanel.add(valueList);
-                    valurViewPanel.updateUI();
-                    break;
-                case "set":
-
-                    valueList.setListData(jedis.smembers(key).toArray());
-                    valurViewPanel.add(valueList);
-                    valurViewPanel.updateUI();
-                    break;
-                case "zset":
-
-                    valueList.setListData(jedis.zrange(key, 0, -1).toArray());
-                    valurViewPanel.add(valueList);
-                    valurViewPanel.updateUI();
-                    break;
-                case "hash":
-                    value = jedis.hgetAll(key).toString();
-                    valuePanel.setText(value);
-                    valurViewPanel.add(valuePanel);
-                    valurViewPanel.updateUI();
-                    break;
-                default:
-                    value = "";
-
-                    valuePanel.setText(value);
-                    valurViewPanel.add(valuePanel);
-                    valurViewPanel.updateUI();
-
-                    break;
-            }
-
-            selectRedisServer.close();
-        });
-
+        keyList.addListSelectionListener(this::listSelectionListenerAction);
     }
 
 
+    private void listSelectionListenerAction(ListSelectionEvent e) {
+        valurViewPanel.removeAll();
+        RedisDBComponent selectRedisServer = serverList.getSelectedValue();
+        selectRedisServer.initJedisSharedInfo();
+        Jedis jedis = selectRedisServer.getJedis();
+        String key = keyList.getSelectedValue();
+        if (key == null || key.isEmpty()) {
+            return;
+        }
+        String keyType = jedis.type(key);
+        String value = "";
+        keyTextPanel.setText(key);
+        ttlTextPanel.setText(jedis.ttl(key) + " ms");
+        switch (keyType) {
+            case "string":
+                valurViewPanel.setVisible(true);
 
+                value = jedis.get(key);
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            case "list":
+
+                valueList.setListData(jedis.lrange(key, 0, -1).toArray());
+                valurViewPanel.add(valueList);
+                valurViewPanel.updateUI();
+                break;
+            case "set":
+
+                valueList.setListData(jedis.smembers(key).toArray());
+                valurViewPanel.add(valueList);
+                valurViewPanel.updateUI();
+                break;
+            case "zset":
+
+                valueList.setListData(jedis.zrange(key, 0, -1).toArray());
+                valurViewPanel.add(valueList);
+                valurViewPanel.updateUI();
+                break;
+            case "hash":
+                value = jedis.hgetAll(key).toString();
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            default:
+                value = "";
+
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+
+                break;
+        }
+
+        selectRedisServer.close();
+
+    }
     private void newConnectAction(ActionEvent actionEvent) {
         RedisConnectionPage form = new RedisConnectionPage(this);
 
@@ -216,10 +225,62 @@ public class RedisManager {
         selectRedisServer.close();
     }
     private void onValueUpdateAction(ActionEvent actionEvent) {
+        valurViewPanel.removeAll();
         RedisDBComponent selectRedisServer = serverList.getSelectedValue();
         selectRedisServer.initJedisSharedInfo();
         Jedis jedis = selectRedisServer.getJedis();
         String key = keyList.getSelectedValue();
+        String keyType = jedis.type(key);
+        String value = "";
+        switch (keyType) {
+            case "string":
+                valurViewPanel.setVisible(true);
+
+                value = jedis.get(key);
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            case "list":
+
+                value = String.join(",", jedis.lrange(key, 0, -1));
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            case "set":
+                value = String.join(",", jedis.smembers(key));
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            case "zset":
+
+                value = String.join(",", jedis.zrange(key, 0, -1));
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            case "hash":
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    value = mapper.writeValueAsString(jedis.hgetAll(key));
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+                break;
+            default:
+                value = "";
+
+                valuePanel.setText(value);
+                valurViewPanel.add(valuePanel);
+                valurViewPanel.updateUI();
+
+                break;
+        }
 
 
     }
@@ -235,23 +296,33 @@ public class RedisManager {
         String value = valuePanel.getText().trim();
         switch (keyType) {
             case "string":
+                jedis.set(key, value);
+
                 break;
             case "list":
-                value = value;
+                jedis.del(key);
+                jedis.lpush(key, value.split(","));
                 break;
             case "set":
-                value = value;
+                jedis.sadd(key, value.split(","));
                 break;
             case "zset":
-                value = value;
+                jedis.sadd(key, value.split(","));
                 break;
             case "hash":
-                value = value;
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    Map<String, String> valueMap = mapper.readValue(value, Map.class);
+                    jedis.hset(key, valueMap);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
-                value = value;;
+                value = value;
                 break;
         }
+        this.listSelectionListenerAction(null);
         System.out.println(value);
         selectRedisServer.close();
 

@@ -1,11 +1,6 @@
 package org.miss.redis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.intellij.ide.plugins.newui.TextHorizontalLayout;
-import com.intellij.json.JsonParser;
-import com.intellij.json.json5.Json5Language;
 import com.intellij.ui.components.JBList;
 import org.miss.redis.component.RedisDBComponent;
 import org.miss.redis.component.RedisServerListModel;
@@ -21,11 +16,9 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @project: miss-redis-plugin
@@ -265,7 +258,7 @@ public class RedisManager {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     value = mapper.writeValueAsString(jedis.hgetAll(key));
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 valuePanel.setText(value);
@@ -314,7 +307,7 @@ public class RedisManager {
                 try {
                     Map<String, String> valueMap = mapper.readValue(value, Map.class);
                     jedis.hset(key, valueMap);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;

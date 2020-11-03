@@ -111,6 +111,7 @@ public class RedisManager {
         moreButton.addActionListener(this::onMoreAction);
         searchKeyButton.addActionListener(this::onKeySearchAction);
         clearKeySearch.addActionListener(this::onCleanKeyAction);
+        newKeyButton.addActionListener(this::onNewKeyAction);
         updateButton.addActionListener(this::onValueUpdateAction);
         updateValueButton.addActionListener(this::onValueUpdateConfirmAction);
         newConnectButton.addActionListener(this::newConnectAction);
@@ -277,6 +278,10 @@ public class RedisManager {
 
 
     }
+
+    private void onNewKeyAction(ActionEvent actionEvent) {
+    }
+
     private void onValueUpdateConfirmAction(ActionEvent actionEvent) {
         RedisDBComponent selectRedisServer = serverList.getSelectedValue();
         selectRedisServer.initJedisSharedInfo();

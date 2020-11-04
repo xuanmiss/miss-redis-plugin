@@ -15,3 +15,9 @@
 
 - 优化面板样式
 - 不同类型的值采用不用的面板展示
+
+### 感谢
+
+ <a href = "https://www.jetbrains.com/?from=miss-redis-plugin"><img src="img/jetbrains-variant-3.png" width = "200" height = "200" alt="JetBrains" align=center/></a> 
+
+感谢 JetBrains 提供开源支持

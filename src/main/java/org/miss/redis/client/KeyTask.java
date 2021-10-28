@@ -8,4 +8,10 @@ package org.miss.redis.client;
  * @history: 1.2020/7/27 created by miss
  */
 public class KeyTask {
+  
+  private String key;
+  
+  private String keyType;
+  
+  public KeyTask() {}
 }

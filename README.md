@@ -15,7 +15,8 @@
 
 - 优化面板样式
 - 不同类型的值采用不用的面板展示
-
+- 考虑适配IDEA新的版本
+- 独立出来，使用javafx构建本地客户端
 ### 感谢
 
  <a href = "https://www.jetbrains.com/?from=miss-redis-plugin"><img src="img/jetbrains-variant-3.png" width = "200" height = "200" alt="JetBrains" align=center/></a> 
